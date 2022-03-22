@@ -2,7 +2,6 @@
 let kanapSection = document.getElementById('items');
 
 // récupération et affichage des données de l'API 
-
 fetch('http://localhost:3000/api/products')
     .then(function(res) {
         if(res.ok) {
@@ -10,7 +9,6 @@ fetch('http://localhost:3000/api/products')
         }
     })
     .then(function(value) {
-        console.log(value);
         for (let i = 0; i < value.length; i++) {
             // creation des balises 
             let itemLien = document.createElement('a');
