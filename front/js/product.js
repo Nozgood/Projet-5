@@ -6,9 +6,9 @@ let itemPrice = document.getElementById('price');
 let itemDesc = document.getElementById('description');
 let itemColors = document.getElementById('colors');
 
+// id recup to display infos 
 let url = new URL(window.location.href);
 let id = url.searchParams.get('id');
-console.log(id);
 
 // init id to variables 
 let sinope = '107fb5b75607497b96722bda5b504926';
@@ -20,7 +20,7 @@ let helice = '77711f0e466b4ddf953f677d30b0efc9';
 let thyone = '034707184e8e4eefb46400b5a3774b5f';
 let orthosie = 'a6ec5b49bd164d7fbe10f37b6363f9fb';
 
-// fetch function (dry)
+// fetch function to do not repeat 
 function fetchi() {
     fetch('http://localhost:3000/api/products/' + id)
     .then(function(res) {
@@ -44,7 +44,7 @@ function fetchi() {
         }
     });
 }
-// display infos in function of the id 
+// display infos according to the id 
 if(id == sinope) {
     fetchi();
 } else if (id == cyllene) {
