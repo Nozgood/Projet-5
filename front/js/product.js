@@ -40,25 +40,39 @@ function fetchi() {
 // display infos according to the id 
 fetchi();
 
+
+
+///////////////////////////////////////////////////////////////
+
+
+
+
+
 // add to basket 
-// init variables 
+// init array 
+let totalBasket = [];
+
+// function to store item datas to display on the basket page 
+function basket() {
+    addBasket.addEventListener('click', function() {
+
+        //init variables 
+        let selectedColor = itemColors.options[itemColors.selectedIndex].text;
+        let selectedQty = itemQuantity.value;
+
+        // total Basket 
+        totalBasket.push(id, selectedColor, selectedQty);
+        console.log(totalBasket)
+
+        // add array to localStorage
+        localStorage.setItem('Total', totalBasket);
+        console.log(localStorage);
+    })
+}
+basket();
 
 
-let quantityBasket = localStorage.setItem('quantity', '');
-
-
-// store item datas to display on the basket page 
-addBasket.addEventListener('click', function() {
-    let selectedColor = itemColors.options[itemColors.selectedIndex].text;
-    let selectedQty = itemQuantity.value;
-    let idBasket = localStorage.setItem('id', id);
-    let colorBasket = localStorage.setItem('color', selectedColor);
-    let quantityBasket = localStorage.setItem('quantity', selectedQty);
-    console.log(localStorage);
-    console.log(selectedColor)
-;
-})
-
+// il va falloir maintenant créer un nouveau tableau si id différent et incrémenter si id pareil quand j'ajoute un item au basket 
 
 
 
