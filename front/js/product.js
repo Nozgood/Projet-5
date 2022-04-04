@@ -51,6 +51,7 @@ fetchi();
 // add to basket 
 // init array 
 let totalBasket = [];
+let littleBasket = [];
 
 // function to store item datas to display on the basket page 
 function basket() {
@@ -61,19 +62,31 @@ function basket() {
         let selectedQty = itemQuantity.value;
 
         // total Basket 
-        totalBasket.push(id, selectedColor, selectedQty);
+        littleBasket = [id, selectedColor, selectedQty];
+        totalBasket.push(littleBasket);
+        console.log(littleBasket);
         console.log(totalBasket)
-
-        // add array to localStorage
+        if (totalBasket.length >= 2) {
+            for (i in totalBasket) {
+                if (totalBasket[i][0] == totalBasket[totalBasket.length - 1][0] && totalBasket[i][1] == totalBasket[totalBasket.length - 1][1]) {
+                    totalBasket[i][2] = parseInt(totalBasket[i][2]) + parseInt(totalBasket[totalBasket.length - 1][2]);
+                    totalBasket.pop();
+            }
+        }
+    }
+    // add array to localStorage
         localStorage.setItem('Total', totalBasket);
         console.log(localStorage);
-    })
-}
+})}
+
 basket();
 
 
 // il va falloir maintenant créer un nouveau tableau si id différent et incrémenter si id pareil quand j'ajoute un item au basket 
+// de plus de nas oublier de bien vérifier qu'une couleur a été sélect et un quantité également
 
+// if (totalBasket[i][0] == totalBasket[totalBasket.length - 1][0] && totalBasket[i][1] == totalBasket[totalBasket.length - 1][1]) {
+//     totalBasket[i][2] = parseInt(totalBasket[i][2]) + parseInt(totalBasket[totalBasket.length - 1][2]);
 
 
 
