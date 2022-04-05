@@ -63,6 +63,7 @@ function basket() {
 
         // total Basket 
         littleBasket = [id, selectedColor, selectedQty];
+
         totalBasket.push(littleBasket);
         console.log(littleBasket);
         console.log(totalBasket)
@@ -71,6 +72,8 @@ function basket() {
                 if (totalBasket[i][0] == totalBasket[totalBasket.length - 1][0] && totalBasket[i][1] == totalBasket[totalBasket.length - 1][1]) {
                     totalBasket[i][2] = parseInt(totalBasket[i][2]) + parseInt(totalBasket[totalBasket.length - 1][2]);
                     totalBasket.pop();
+            } else {
+                console.log('hello');
             }
         }
     }
@@ -88,12 +91,10 @@ basket();
 // if (totalBasket[i][0] == totalBasket[totalBasket.length - 1][0] && totalBasket[i][1] == totalBasket[totalBasket.length - 1][1]) {
 //     totalBasket[i][2] = parseInt(totalBasket[i][2]) + parseInt(totalBasket[totalBasket.length - 1][2]);
 
-
-
-
-
-
-
+// lorsque la boucle s'opère, je dois faire en sorte que le script ne compare pas 2x le même élément 
+// la vérification doit se faire avant d'ajouter l'élément au tableau totalBasket et non pas après 
+// se traduit par : vérifier si l'item littleBasket qui va rentrer dans totalBasket est déjà présent, si c'est le cas juste récup la qty et l'incrémenter 
+// il existe des fonctions JS qui permettent de vérifier la prézsence d'un élément dans un tableau ou non 
 
 
 
