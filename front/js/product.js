@@ -43,7 +43,11 @@ fetchi();
 // add to basket 
 // init array 
 let totalBasket = [];
-let littleBasket = [];
+let littleBasket = {
+    'id' : '',
+    'color': '',
+    'qty' : '',
+};
 
 // function to store item datas to display on the basket page 
 function basket() {
@@ -52,28 +56,19 @@ function basket() {
         //init variables 
         let selectedColor = itemColors.options[itemColors.selectedIndex].text;
         let selectedQty = itemQuantity.value;
-
-        // add little to totalBasket if not the same item  
-        littleBasket = [id, selectedColor, selectedQty];
-        if (totalBasket.length != 0) {
-            for (i in totalBasket) {
-                if (littleBasket[0] == totalBasket[i][0] && littleBasket[1] == totalBasket[i][1]) {
-                    totalBasket[i][2] = parseInt(totalBasket[i][2]) + parseInt(littleBasket[2])
-                } else {
-                    totalBasket.push(littleBasket);
-                }
-            }
-        } else {
-            totalBasket.push(littleBasket);
-        }
-
+        littleBasket.id = id;
+        littleBasket.color = selectedColor;
+        littleBasket.qty = selectedQty;
+        totalBasket.push(littleBasket);
         // verif
         console.log(littleBasket);
         console.log(totalBasket)
 
     // add array to localStorage
-        localStorage.setItem('Total', totalBasket);
-        console.log(localStorage);
+    for (i=0; i < totalBasket.length; i++)
+    localStorage.setItem(i, JSON.stringify(totalBasket[i]));
+    console.log(localStorage);
+
 })}
 
 // execution 
