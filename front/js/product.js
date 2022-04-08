@@ -41,38 +41,37 @@ function fetchi() {
 fetchi();
 
 // add to basket 
-// init array 
 let totalBasket = [];
-let littleBasket = {
-    'id' : '',
-    'color': '',
-    'qty' : '',
-};
 
 // function to store item datas to display on the basket page 
-function basket() {
-    addBasket.addEventListener('click', function() {
 
-        //init variables 
-        let selectedColor = itemColors.options[itemColors.selectedIndex].text;
-        let selectedQty = itemQuantity.value;
-        littleBasket.id = id;
-        littleBasket.color = selectedColor;
-        littleBasket.qty = selectedQty;
-        totalBasket.push(littleBasket);
-        // verif
-        console.log(littleBasket);
-        console.log(totalBasket)
+addBasket.addEventListener('click', function basket() {
+    let selectedColor = itemColors.options[itemColors.selectedIndex].text;
+    let selectedQty = itemQuantity.value;
+    let product =  {
+        'id' : id,
+        'color' : selectedColor,
+        'qty': selectedQty
+    };
+    if (totalBasket.length > 0) {
+        let foundProductId = totalBasket.find(p => p.id == product.id)
+        let foundProductColor = totalBasket.find(p => p.color == product.color)
+        if (foundProductColor != undefined && foundProductId != undefined) {
+            foundProductColor.qty = parseInt(product.qty) + parseInt(foundProductColor.qty);
+        } else {
+            totalBasket.push(product);
+        }
+    } else {
+        totalBasket.push(product);
+    }
 
-    // add array to localStorage
-    for (i=0; i < totalBasket.length; i++)
-    localStorage.setItem(i, JSON.stringify(totalBasket[i]));
-    console.log(localStorage);
+    console.log(product);
+    console.log(totalBasket);
 
-})}
+    localStorage.setItem('basket', JSON.stringify(totalBasket));
 
-// execution 
-basket();
+    });
+
 
 
 
