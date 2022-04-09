@@ -41,10 +41,43 @@ function fetchi() {
 fetchi();
 
 // add to basket 
-let totalBasket = [];
 
-// function to store item datas to display on the basket page 
 
+// save the localstorage
+function saveBasket(basket) {
+    localStorage.setItem('basket', JSON.stringify(basket));
+}
+
+// get the localstorage
+function getBasket() {
+    let test = (localStorage.getItem('basket'));
+    if (test == null) {
+        return [];
+    } else {
+        return JSON.parse(test);
+    }
+}
+
+// add a product to the localstorage
+function pushBasket(product) {
+    let basket = getBasket();
+
+    if (basket.length > 0) {
+        let foundProductId = basket.find(p => p.id == product.id)
+        let foundProductColor = basket.find(p => p.color == product.color)
+
+        if (foundProductColor != undefined && foundProductId != undefined) {
+            foundProductColor.qty = parseInt(product.qty) + parseInt(foundProductColor.qty);
+        } else {
+            basket.push(product);
+        }
+    } else {
+        basket.push(product);
+    }
+    saveBasket(basket);
+}
+
+// add to basket when user click 
 addBasket.addEventListener('click', function basket() {
     let selectedColor = itemColors.options[itemColors.selectedIndex].text;
     let selectedQty = itemQuantity.value;
@@ -53,27 +86,9 @@ addBasket.addEventListener('click', function basket() {
         'color' : selectedColor,
         'qty': selectedQty
     };
-    if (totalBasket.length > 0) {
-        let foundProductId = totalBasket.find(p => p.id == product.id)
-        let foundProductColor = totalBasket.find(p => p.color == product.color)
-        if (foundProductColor != undefined && foundProductId != undefined) {
-            foundProductColor.qty = parseInt(product.qty) + parseInt(foundProductColor.qty);
-        } else {
-            totalBasket.push(product);
-        }
-    } else {
-        totalBasket.push(product);
-    }
 
-    console.log(product);
-    console.log(totalBasket);
-
-    localStorage.setItem('basket', JSON.stringify(totalBasket));
-
-    });
-
-
-
+    pushBasket(product);
+});
 
 
 
