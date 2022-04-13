@@ -41,8 +41,6 @@ function fetchi() {
 fetchi();
 
 // add to basket 
-
-
 // save the localstorage
 function saveBasket(basket) {
     localStorage.setItem('basket', JSON.stringify(basket));
@@ -50,11 +48,11 @@ function saveBasket(basket) {
 
 // get the localstorage
 function getBasket() {
-    let test = (localStorage.getItem('basket'));
-    if (test == null) {
+    let littleBasket = (localStorage.getItem('basket'));
+    if (littleBasket == null) {
         return [];
     } else {
-        return JSON.parse(test);
+        return JSON.parse(littleBasket);
     }
 }
 
@@ -89,50 +87,3 @@ addBasket.addEventListener('click', function basket() {
 
     pushBasket(product);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// if datas needed
-// fetch('http://localhost:3000/api/products/')
-//     .then
-//     (function (res) {
-//         if (res.ok) {
-//             return res.json();
-//         }
-//     })
-//     .then
-//     (function (value) {
-//         console.log(value);
-//     })
