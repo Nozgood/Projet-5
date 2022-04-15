@@ -78,12 +78,15 @@ function pushBasket(product) {
 // add to basket when user click 
 addBasket.addEventListener('click', function basket() {
     let selectedColor = itemColors.options[itemColors.selectedIndex].text;
-    let selectedQty = itemQuantity.value;
-    let product =  {
+    if (selectedColor ==  '--SVP, choisissez une couleur --') {
+        alert('Veuillez choisir une couleur')
+    } else {
+        let selectedQty = itemQuantity.value;
+        let product =  {
         'id' : id,
         'color' : selectedColor,
         'qty': selectedQty
     };
-
     pushBasket(product);
+    }
 });

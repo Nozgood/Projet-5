@@ -6,9 +6,19 @@ let basket = JSON.parse(localStorage.getItem('basket'));
 
 // set article for each item in basket 
 for (i in basket) {
+    fetch('http://localhost:3000/api/products/' + basket[i].id)
+    .then(function(res) {
+        if(res.ok) {
+            return res.json()
+        }
+    })
+    .then (function (value) {
+    console.log(value);
+    let itemColor = value.colors.find(p => p.color == basket[i].color);
     let itemArticle = document.createElement('article')
     itemArticle.setAttribute('class', 'cart__item');
-    itemArticle.setAttribute('data-id', basket[i].id);
+    itemArticle.setAttribute('data-id', value._id);
+    itemArticle.setAttribute('data-color', itemColor);
     itemSection.appendChild(itemArticle);
 
     // set img div
@@ -18,8 +28,8 @@ for (i in basket) {
 
     // set img element
     let itemImg = document.createElement('img');
-    itemImg.setAttribute('src', '');
-    itemImg.setAttribute('alt', '');
+    itemImg.setAttribute('src', value.imageUrl);
+    itemImg.setAttribute('alt', value.altTxt);
     imgDiv.appendChild(itemImg);
 
     // set content div 
@@ -32,9 +42,14 @@ for (i in basket) {
     contentDescDiv.setAttribute('class', 'cart__item__content__description');
     contentDiv.appendChild(contentDescDiv);
     let h2Content = document.createElement('h2');
-    let pContent =  document.createElement('p');
+    let pContentColor =  document.createElement('p');
+    let pContentPrice =  document.createElement('p');
     contentDescDiv.appendChild(h2Content);
-    contentDescDiv.appendChild(pContent);
+    contentDescDiv.appendChild(pContentColor);
+    contentDescDiv.appendChild(pContentPrice);
+    pContentColor.textContent = itemColor;
+    pContentPrice.textContent = value.price + ' €';
+    h2Content.textContent = value.name;
 
     // set content settings
     let contentSettDiv = document.createElement('div');
@@ -46,6 +61,7 @@ for (i in basket) {
     contentSettQtyDiv.setAttribute('class', 'cart__item__content__settings__quantity');
     contentSettDiv.appendChild(contentSettQtyDiv);
     let pQty = document.createElement('p');
+    pQty.textContent = 'Qté :';
     let inputQty = document.createElement('input');
     inputQty.setAttribute('type', 'number');
     inputQty.setAttribute('class', 'itemQuantity');
@@ -64,16 +80,6 @@ for (i in basket) {
     pDelete.textContent = 'Supprimer';
     contentSettDiv.appendChild(deleteDiv);
     deleteDiv.appendChild(pDelete);
+    })
+    
 }
-
-// request API
-fetch('http://localhost:3000/api/products/')
-    .then(function(res) {
-        if(res.ok) {
-            return res.json()
-        }
-    })
-    .then (function (value) {
-        console.log(basket);
-        console.log(value);
-    })
