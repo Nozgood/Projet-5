@@ -1,61 +1,47 @@
-// get html elements
+// get html parent element
 let itemSection = document.querySelector('section section');
-
 
 // get localstorage
 let basket = JSON.parse(localStorage.getItem('basket'));
 
 // set article for each item in basket 
-for (i in basket) {
-    fetch('http://localhost:3000/api/products/' + basket[i].id)
-    .then(function(res) {
-        if(res.ok) {
-            return res.json()
-        }
-    })
-    .then (function (value) {
-    console.log(value);
-    let itemArticle = document.createElement('article');
+for (i=0; i < basket.length; i++) {
+
+    // set article tag and attributes
+    itemArticle = document.createElement('article');
     itemArticle.setAttribute('class', 'cart__item');
-    itemArticle.setAttribute('data-id', value._id);
-    itemArticle.setAttribute('data-color', '');
+    itemArticle.setAttribute('data-color', basket[i].color);
+    itemArticle.setAttribute('data-id', basket[i].id);
     itemSection.appendChild(itemArticle);
 
-    // set img div
+    // set the div to display img infos 
     let imgDiv = document.createElement('div');
     imgDiv.setAttribute('class', 'cart__item__img');
     itemArticle.appendChild(imgDiv);
-
-    // set img element
     let itemImg = document.createElement('img');
-    itemImg.setAttribute('src', value.imageUrl);
-    itemImg.setAttribute('alt', value.altTxt);
     imgDiv.appendChild(itemImg);
 
-    // set content div 
+    // set the div to display content infos (title, price ...)
     let contentDiv = document.createElement('div');
     contentDiv.setAttribute('class', 'cart__item__content');
     itemArticle.appendChild(contentDiv);
 
-    // set content elements
+    // 1st child for the description (color for example)
     let contentDescDiv = document.createElement('div');
     contentDescDiv.setAttribute('class', 'cart__item__content__description');
     contentDiv.appendChild(contentDescDiv);
     let h2Content = document.createElement('h2');
-    let pContentColor =  document.createElement('p');
+    pContentColor =  document.createElement('p');
+    pContentColor.textContent = basket[i].color;
     let pContentPrice =  document.createElement('p');
     contentDescDiv.appendChild(h2Content);
     contentDescDiv.appendChild(pContentColor);
     contentDescDiv.appendChild(pContentPrice);
-    pContentPrice.textContent = value.price + ' €';
-    h2Content.textContent = value.name;
 
-    // set content settings
+    //2nd child for the settings (qty and delete)
     let contentSettDiv = document.createElement('div');
     contentSettDiv.setAttribute('class', 'cart__item__content__settings');
     contentDiv.appendChild(contentSettDiv);
-
-    // set content settings qty 
     let contentSettQtyDiv = document.createElement('div');
     contentSettQtyDiv.setAttribute('class', 'cart__item__content__settings__quantity');
     contentSettDiv.appendChild(contentSettQtyDiv);
@@ -67,7 +53,7 @@ for (i in basket) {
     inputQty.setAttribute('name', 'itemQuantity');
     inputQty.setAttribute('min', '1');
     inputQty.setAttribute('max', '100');
-    inputQty.setAttribute('value', '');
+    inputQty.setAttribute('value', basket[i].qty);
     contentSettQtyDiv.appendChild(pQty);
     contentSettQtyDiv.appendChild(inputQty);
 
@@ -80,9 +66,22 @@ for (i in basket) {
     contentSettDiv.appendChild(deleteDiv);
     deleteDiv.appendChild(pDelete);
 
-        let a = basket[i];
-        console.log(a.color);
-    pContentColor.textContent = a.color;
+    // fetch to get the infos (title, price, image, altdesc ...)
+    fetch('http://localhost:3000/api/products/' + basket[i].id)
+    .then(function(res) {
+        if(res.ok) {
+            return res.json()
+        }
+    })
+    .then (function (value) {
+        console.log(value);
+
+        // display image and alt infos 
+        itemImg.setAttribute('src', value.imageUrl);
+        itemImg.setAttribute('alt', value.altTxt);
+
+        // display price and title 
+        pContentPrice.textContent = value.price + ' €';
+        h2Content.textContent = value.name;
     })
 }
-
