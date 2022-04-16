@@ -1,5 +1,6 @@
 // get html elements
-let itemSection = document.querySelector('section section')
+let itemSection = document.querySelector('section section');
+
 
 // get localstorage
 let basket = JSON.parse(localStorage.getItem('basket'));
@@ -14,11 +15,10 @@ for (i in basket) {
     })
     .then (function (value) {
     console.log(value);
-    let itemColor = value.colors.find(p => p.color == basket[i].color);
-    let itemArticle = document.createElement('article')
+    let itemArticle = document.createElement('article');
     itemArticle.setAttribute('class', 'cart__item');
     itemArticle.setAttribute('data-id', value._id);
-    itemArticle.setAttribute('data-color', itemColor);
+    itemArticle.setAttribute('data-color', '');
     itemSection.appendChild(itemArticle);
 
     // set img div
@@ -47,7 +47,6 @@ for (i in basket) {
     contentDescDiv.appendChild(h2Content);
     contentDescDiv.appendChild(pContentColor);
     contentDescDiv.appendChild(pContentPrice);
-    pContentColor.textContent = itemColor;
     pContentPrice.textContent = value.price + ' €';
     h2Content.textContent = value.name;
 
@@ -80,6 +79,10 @@ for (i in basket) {
     pDelete.textContent = 'Supprimer';
     contentSettDiv.appendChild(deleteDiv);
     deleteDiv.appendChild(pDelete);
+
+        let a = basket[i];
+        console.log(a.color);
+    pContentColor.textContent = a.color;
     })
-    
 }
+
