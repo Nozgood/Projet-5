@@ -1,18 +1,57 @@
-// get html parent element
+// get html parent element and init variable
 let itemSection = document.querySelector('section section');
+let littlePrice = [];
+let itemsQty = [];
 
 // get localstorage
 let basket = JSON.parse(localStorage.getItem('basket'));
 
+// get the quantity and price span 
+let spanPrice = document.getElementById('totalPrice');
+let spanQty = document.getElementById('totalQuantity');
+
+// price to get the total price and display on the span 
+function getPrice(id, count) {
+    fetch('http://localhost:3000/api/products/' + id)
+    .then(function(res) {
+        if(res.ok) {
+            return res.json()
+        }
+    })
+    .then (function (value) {
+        let a = value.price * count
+        littlePrice.push(a);
+        console.log(littlePrice);
+        let test = 0;
+        for (i in littlePrice) {
+            test += littlePrice[i];
+        }
+        spanPrice.textContent = test;
+    })
+}
+
+// function to get the total qty and display it 
+function totalQty(){
+    let totalQty = 0;
+    for (i in itemsQty) {
+        totalQty += itemsQty[i];
+        console.log(totalQty);
+        spanQty.textContent = totalQty;
+    }
+}
+
 // set article for each item in basket 
 for (i=0; i < basket.length; i++) {
-
+    getPrice(basket[i].id, basket[i].qty);
     // set article tag and attributes
     itemArticle = document.createElement('article');
     itemArticle.setAttribute('class', 'cart__item');
     itemArticle.setAttribute('data-color', basket[i].color);
     itemArticle.setAttribute('data-id', basket[i].id);
     itemSection.appendChild(itemArticle);
+
+    itemsQty.push(parseInt(basket[i].qty));
+    totalQty();
 
     // set the div to display img infos 
     let imgDiv = document.createElement('div');
