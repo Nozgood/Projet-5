@@ -2,6 +2,7 @@
 let itemSection = document.querySelector('section section');
 let littlePrice = [];
 let itemsQty = [];
+let totalPrice = 0;
 
 // get localstorage
 let basket = JSON.parse(localStorage.getItem('basket'));
@@ -21,12 +22,11 @@ function getPrice(id, count) {
     .then (function (value) {
         let a = value.price * count
         littlePrice.push(a);
-        console.log(littlePrice);
-        let test = 0;
+        totalPrice = 0;
         for (i in littlePrice) {
-            test += littlePrice[i];
+            totalPrice += littlePrice[i];
         }
-        spanPrice.textContent = test;
+        spanPrice.textContent = totalPrice;
     })
 }
 
@@ -35,7 +35,6 @@ function totalQty(){
     let totalQty = 0;
     for (i in itemsQty) {
         totalQty += itemsQty[i];
-        console.log(totalQty);
         spanQty.textContent = totalQty;
     }
 }
@@ -73,6 +72,7 @@ for (i=0; i < basket.length; i++) {
     pContentColor =  document.createElement('p');
     pContentColor.textContent = basket[i].color;
     let pContentPrice =  document.createElement('p');
+    pContentPrice.setAttribute('class', 'price');
     contentDescDiv.appendChild(h2Content);
     contentDescDiv.appendChild(pContentColor);
     contentDescDiv.appendChild(pContentPrice);
@@ -92,7 +92,7 @@ for (i=0; i < basket.length; i++) {
     inputQty.setAttribute('name', 'itemQuantity');
     inputQty.setAttribute('min', '1');
     inputQty.setAttribute('max', '100');
-    inputQty.setAttribute('value', basket[i].qty);
+    inputQty.setAttribute('value', parseInt(basket[i].qty));
     contentSettQtyDiv.appendChild(pQty);
     contentSettQtyDiv.appendChild(inputQty);
 
@@ -113,7 +113,6 @@ for (i=0; i < basket.length; i++) {
         }
     })
     .then (function (value) {
-        console.log(value);
 
         // display image and alt infos 
         itemImg.setAttribute('src', value.imageUrl);
@@ -124,3 +123,36 @@ for (i=0; i < basket.length; i++) {
         h2Content.textContent = value.name;
     })
 }
+
+// modify quantity 
+let getQty = document.querySelectorAll('input.itemQuantity');
+getQty.forEach(newQty => {
+    let a = newQty.value;
+    newQty.addEventListener('change', event => {
+        let b = parseInt(a);
+        newQty.setAttribute('value', newQty.value);
+        let c = parseInt(newQty.value) - b;
+        spanQty.textContent = parseInt(spanQty.textContent) + c;
+        a = newQty.value;
+    })
+})
+
+
+// display the correct quantity (when amended) on the localstorage
+let getArticle = document.querySelectorAll('article.cart__item');
+getArticle.forEach(newInfo => {
+    newInfo.addEventListener('change', event => {
+        littlePrice.splice(0);
+        let getArticleColor = newInfo.dataset.color;
+        let getArticleId = newInfo.dataset.id;
+        itemsQty.splice(0);
+        for (i in basket) {
+            if (getArticleColor == basket[i].color && getArticleId == basket[i].id) {
+                basket[i].qty = getQty[i].value;
+                console.log(basket);
+                localStorage.setItem('basket', JSON.stringify(basket));
+            }
+            getPrice(basket[i].id, basket[i].qty);
+        }
+    })
+})
