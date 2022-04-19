@@ -1,4 +1,4 @@
-// get html parent element and init variable
+// get html parent elements and init variables
 let itemSection = document.querySelector('section section');
 let littlePrice = [];
 let itemsQty = [];
@@ -11,7 +11,7 @@ let basket = JSON.parse(localStorage.getItem('basket'));
 let spanPrice = document.getElementById('totalPrice');
 let spanQty = document.getElementById('totalQuantity');
 
-// price to get the total price and display on the span 
+// function to get the total price and display on the span 
 function getPrice(id, count) {
     fetch('http://localhost:3000/api/products/' + id)
     .then(function(res) {
@@ -20,8 +20,8 @@ function getPrice(id, count) {
         }
     })
     .then (function (value) {
-        let a = value.price * count
-        littlePrice.push(a);
+        let price = value.price * count
+        littlePrice.push(price);
         totalPrice = 0;
         for (i in littlePrice) {
             totalPrice += littlePrice[i];
@@ -39,7 +39,7 @@ function totalQty(){
     }
 }
 
-// set article for each item in basket 
+// set article for each item in basket
 for (i=0; i < basket.length; i++) {
     getPrice(basket[i].id, basket[i].qty);
     // set article tag and attributes
@@ -127,13 +127,13 @@ for (i=0; i < basket.length; i++) {
 // modify quantity 
 let getQty = document.querySelectorAll('input.itemQuantity');
 getQty.forEach(newQty => {
-    let a = newQty.value;
+    let qty = newQty.value;
     newQty.addEventListener('change', event => {
-        let b = parseInt(a);
+        let oldQty = parseInt(qty);
         newQty.setAttribute('value', newQty.value);
-        let c = parseInt(newQty.value) - b;
-        spanQty.textContent = parseInt(spanQty.textContent) + c;
-        a = newQty.value;
+        let realQty = parseInt(newQty.value) - oldQty;
+        spanQty.textContent = parseInt(spanQty.textContent) + realQty;
+        qty = newQty.value;
     })
 })
 
@@ -145,14 +145,51 @@ getArticle.forEach(newInfo => {
         littlePrice.splice(0);
         let getArticleColor = newInfo.dataset.color;
         let getArticleId = newInfo.dataset.id;
-        itemsQty.splice(0);
         for (i in basket) {
             if (getArticleColor == basket[i].color && getArticleId == basket[i].id) {
                 basket[i].qty = getQty[i].value;
-                console.log(basket);
                 localStorage.setItem('basket', JSON.stringify(basket));
             }
+            // according the price to the new quantity
             getPrice(basket[i].id, basket[i].qty);
+        }
+    })
+})
+
+// delete an item 
+// get the delete button to listen
+let deleteButton = document.querySelectorAll('p.deleteItem');
+
+// listen all the buttons
+deleteButton.forEach(remove => {
+    remove.addEventListener('click', event => {
+        // init variables
+        let articleToRemove = remove.closest('article');
+        let articleColor = articleToRemove.dataset.color;
+        let articleId = articleToRemove.dataset.id;
+
+        // reinitialise price and qty arrays
+        littlePrice.splice(0);
+        itemsQty.splice(0);
+
+        // loop to find the item to delete
+        for (i in basket) {
+            if (articleColor == basket[i].color && articleId == basket[i].id) {
+                basket.splice(i, 1);
+                console.log(basket);
+                localStorage.setItem('basket', JSON.stringify(basket));
+                articleToRemove.remove();
+            }
+
+            // display the new price / quantity 
+            if (basket.length == 0) {
+                spanPrice.textContent = '0';
+                spanQty.textContent = '0';
+            } else {
+                itemsQty.push(parseInt(basket[i].qty));
+            getPrice(basket[i].id, basket[i].qty);
+            totalQty();
+            }
         }
     })
 })
