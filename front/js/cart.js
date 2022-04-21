@@ -130,6 +130,13 @@ getQty.forEach(newQty => {
     let qty = newQty.value;
     newQty.addEventListener('change', event => {
         let oldQty = parseInt(qty);
+        if (newQty.value <= 0) {
+            alert('Veuillez saisir une quantité comprise entre 1 et 100');
+            newQty.value = oldQty;
+        } else if (newQty.value > 100) {
+            alert('Veuillez saisir une quantité comprise entre 1 et 100');
+            newQty.value = oldQty;
+        }
         newQty.setAttribute('value', newQty.value);
         let realQty = parseInt(newQty.value) - oldQty;
         spanQty.textContent = parseInt(spanQty.textContent) + realQty;
@@ -142,17 +149,17 @@ getQty.forEach(newQty => {
 let getArticle = document.querySelectorAll('article.cart__item');
 getArticle.forEach(newInfo => {
     newInfo.addEventListener('change', event => {
-        littlePrice.splice(0);
-        let getArticleColor = newInfo.dataset.color;
-        let getArticleId = newInfo.dataset.id;
-        for (i in basket) {
-            if (getArticleColor == basket[i].color && getArticleId == basket[i].id) {
-                basket[i].qty = getQty[i].value;
-                localStorage.setItem('basket', JSON.stringify(basket));
+            littlePrice.splice(0);
+            let getArticleColor = newInfo.dataset.color;
+            let getArticleId = newInfo.dataset.id;
+            for (i in basket) {
+                if (getArticleColor == basket[i].color && getArticleId == basket[i].id) {
+                    basket[i].qty = getQty[i].value;
+                    localStorage.setItem('basket', JSON.stringify(basket));
+                }
+                // according the price to the new quantity
+                getPrice(basket[i].id, basket[i].qty);
             }
-            // according the price to the new quantity
-            getPrice(basket[i].id, basket[i].qty);
-        }
     })
 })
 

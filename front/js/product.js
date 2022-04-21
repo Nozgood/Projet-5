@@ -80,6 +80,12 @@ addBasket.addEventListener('click', function basket() {
     let selectedColor = itemColors.options[itemColors.selectedIndex].text;
     if (selectedColor ==  '--SVP, choisissez une couleur --') {
         alert('Veuillez choisir une couleur')
+    } else if (itemQuantity.value <= 0) {
+        alert('Veuillez saisir une quantité comprise entre 1 et 100');
+        itemQuantity.value = 1;
+    } else if (itemQuantity.value > 100) {
+        alert('Veuillez saisir une quantité comprise entre 1 et 100');
+        itemQuantity.value = 1;
     } else {
         let selectedQty = itemQuantity.value;
         let product =  {
