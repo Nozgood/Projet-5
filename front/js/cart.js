@@ -200,3 +200,49 @@ deleteButton.forEach(remove => {
         }
     })
 })
+
+// user form and make the command 
+
+// init variables 
+
+
+let firstName = document.getElementById('firstName');
+let firstNameError = document.getElementById('firstNameErrorMsg');
+
+let lastName = document.getElementById('lastName');
+let lastNameError = document.getElementById('lastNameErrorMsg');
+
+let address = document.getElementById('address');
+
+let town = document.getElementById('city');
+
+let mail = document.getElementById('email');
+
+let commandButton = document.getElementById('order');
+
+// regex variables 
+let regName = /^[a-zA-Z]+$/;
+let regAddress = /^([a-zA-Z0-9]+)[a-zA-Z0-9\s,.'-]{3,}$/;
+let regTown = /^([a-zA-Z]+)[a-zA-Z-\s]{3,}$/;
+let regMail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
+
+commandButton.addEventListener('click', event => {
+    let regExCheck = [];
+    firstNameError.textContent = '';
+    lastNameError.textContent = ''
+    regExCheck.push(regName.test(firstName.value),regName.test(lastName.value), regAddress.test(address.value), regTown.test(town.value), regMail.test(mail.value))
+    if (regExCheck.indexOf(false) < 0) {
+        alert('Commande reçue')
+    } else {
+        alert('Veuillez saisir les bonnes informations dans les champs appropriés')
+    }
+    
+})
+
+// || regName.test(lastName.value) == false || 
+//         regAddress.test(address.value) == false || regTown.test(town.value) == false || regMail.test(mail.value) == false) {
+//         alert('Veuillez saisir un prénom et un nom valide')
+//         console.log(regName.test(firstName.value));
+//         console.log(regName.test(lastName.value));
+//         console.log(regAddress.test(address.value));
+//         console.log(regTown.test(town.value));
