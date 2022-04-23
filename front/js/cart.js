@@ -204,45 +204,96 @@ deleteButton.forEach(remove => {
 // user form and make the command 
 
 // init variables 
-
-
+let form = document.getElementsByClassName('cart__order__form');
+// init first Name
 let firstName = document.getElementById('firstName');
 let firstNameError = document.getElementById('firstNameErrorMsg');
 
+// init last Name
 let lastName = document.getElementById('lastName');
 let lastNameError = document.getElementById('lastNameErrorMsg');
 
+// init address
 let address = document.getElementById('address');
+let addressError = document.getElementById('addressErrorMsg');
 
-let town = document.getElementById('city');
+// init city
+let city = document.getElementById('city');
+let cityError = document.getElementById('cityErrorMsg');
 
+// init mail 
 let mail = document.getElementById('email');
+let mailError = document.getElementById('emailErrorMsg');
 
+// event to listen
 let commandButton = document.getElementById('order');
 
 // regex variables 
-let regName = /^[a-zA-Z]+$/;
-let regAddress = /^([a-zA-Z0-9]+)[a-zA-Z0-9\s,.'-]{3,}$/;
-let regTown = /^([a-zA-Z]+)[a-zA-Z-\s]{3,}$/;
+let regName = /^[a-zA-Zéèêëàâæáäîïôœöùûü]+$/;
+let regAddress = /^([a-zA-Z0-9]+)[a-zA-Z0-9éèêëàâæáäîïôœöùûü\s,.'-]{3,}$/;
+let regCity = /^([a-zA-Z]+)[a-zA-Z-\s]{3,}$/;
 let regMail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
 
-commandButton.addEventListener('click', event => {
-    let regExCheck = [];
-    firstNameError.textContent = '';
-    lastNameError.textContent = ''
-    regExCheck.push(regName.test(firstName.value),regName.test(lastName.value), regAddress.test(address.value), regTown.test(town.value), regMail.test(mail.value))
-    if (regExCheck.indexOf(false) < 0) {
-        alert('Commande reçue')
-    } else {
-        alert('Veuillez saisir les bonnes informations dans les champs appropriés')
-    }
-    
-})
+// init the object to POST 
+let contact = {
+    'firstName' : '',
+    'lastName' : '',
+    'address' : '',
+    'city' : '', 
+    'email' : ''
+}
 
-// || regName.test(lastName.value) == false || 
-//         regAddress.test(address.value) == false || regTown.test(town.value) == false || regMail.test(mail.value) == false) {
-//         alert('Veuillez saisir un prénom et un nom valide')
-//         console.log(regName.test(firstName.value));
-//         console.log(regName.test(lastName.value));
-//         console.log(regAddress.test(address.value));
-//         console.log(regTown.test(town.value));
+// init the product array to post 
+let products = [];
+
+// listen the click on the command Button
+commandButton.addEventListener('click', event => {
+    firstNameError.textContent = '';
+    lastNameError.textContent = '';
+    addressError.textContent = '';
+    cityError.textContent = '';
+    mailError.textContent = '';
+
+    // check datas are correctly set
+    if (regName.test(firstName.value) == false) {
+        firstNameError.textContent = 'Veuillez saisir un prénom contenant uniquement des lettres sans espaces';
+    } else if (regName.test(lastName.value) == false) {
+        lastNameError.textContent = 'Veuillez saisir un nom contenant uniquement des lettres sans espaces ni caractères spéciaux.';
+    } else if (regAddress.test(address.value) == false) {
+        addressError.textContent = 'Veuillez saisir une adresse adéquate';
+    } else if (regCity.test(city.value) == false) {
+        cityError.textContent = 'Veuillez saisir une ville existante'
+    } else if (regMail.test(mail.value) == false) {
+        mailError.textContent = 'Veuillez saisir une adresse mail adéquate';
+    } else {
+        // put the datas in the object
+        contact.firstName = firstName.value
+        contact.lastName = lastName.value
+        contact.address = address.value;
+        contact.city = city.value;
+        contact.email = email.value;
+    
+        //  get the product array 
+    
+        getArticle.forEach(getId => {
+            products.push(getId.dataset.id);
+        })
+        let test = {contact, products};
+        fetch('http://localhost:3000/api/products/order', {
+            method: 'POST',
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify(test)
+        })
+        .then(function(res) {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .then(function(value) {
+            localStorage.setItem('value', value.orderId);
+        })
+    }
+})
