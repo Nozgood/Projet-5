@@ -246,6 +246,7 @@ let contact = {
 // init the product array to post 
 let products = [];
 
+let a;
 // listen the click on the command Button
 commandButton.addEventListener('click', event => {
     firstNameError.textContent = '';
@@ -295,5 +296,7 @@ commandButton.addEventListener('click', event => {
         .then(function(value) {
             localStorage.setItem('value', value.orderId);
         })
+        window.open('confirmation.html' + '?orderId=' + localStorage.getItem('value'));
+        localStorage.removeItem('value');
     }
 })
