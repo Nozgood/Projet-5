@@ -41,89 +41,58 @@ function fetchi() {
 fetchi();
 
 // add to basket 
-// init array 
-let totalBasket = [];
-let littleBasket = [];
+// save the localstorage
+function saveBasket(basket) {
+    localStorage.setItem('basket', JSON.stringify(basket));
+}
 
-// function to store item datas to display on the basket page 
-function basket() {
-    addBasket.addEventListener('click', function() {
+// get the localstorage
+function getBasket() {
+    let littleBasket = (localStorage.getItem('basket'));
+    if (littleBasket == null) {
+        return [];
+    } else {
+        return JSON.parse(littleBasket);
+    }
+}
 
-        //init variables 
-        let selectedColor = itemColors.options[itemColors.selectedIndex].text;
-        let selectedQty = itemQuantity.value;
+// add a product to the localstorage
+function pushBasket(product) {
+    let basket = getBasket();
 
-        // add little to totalBasket if not the same item  
-        littleBasket = [id, selectedColor, selectedQty];
-        if (totalBasket.length != 0) {
-            for (i in totalBasket) {
-                if (littleBasket[0] == totalBasket[i][0] && littleBasket[1] == totalBasket[i][1]) {
-                    totalBasket[i][2] = parseInt(totalBasket[i][2]) + parseInt(littleBasket[2])
-                } else {
-                    totalBasket.push(littleBasket);
-                }
-            }
+    if (basket.length > 0) {
+        let foundProductId = basket.find(p => p.id == product.id)
+        let foundProductColor = basket.find(p => p.color == product.color)
+
+        if (foundProductColor != undefined && foundProductId != undefined) {
+            foundProductColor.qty = parseInt(product.qty) + parseInt(foundProductColor.qty);
         } else {
-            totalBasket.push(littleBasket);
+            basket.push(product);
         }
+    } else {
+        basket.push(product);
+    }
+    saveBasket(basket);
+}
 
-        // verif
-        console.log(littleBasket);
-        console.log(totalBasket)
-
-    // add array to localStorage
-        localStorage.setItem('Total', totalBasket);
-        console.log(localStorage);
-})}
-
-// execution 
-basket();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// if datas needed
-// fetch('http://localhost:3000/api/products/')
-//     .then
-//     (function (res) {
-//         if (res.ok) {
-//             return res.json();
-//         }
-//     })
-//     .then
-//     (function (value) {
-//         console.log(value);
-//     })
+// add to basket when user click 
+addBasket.addEventListener('click', function basket() {
+    let selectedColor = itemColors.options[itemColors.selectedIndex].text;
+    if (selectedColor ==  '--SVP, choisissez une couleur --') {
+        alert('Veuillez choisir une couleur')
+    } else if (itemQuantity.value <= 0) {
+        alert('Veuillez saisir une quantité comprise entre 1 et 100');
+        itemQuantity.value = 1;
+    } else if (itemQuantity.value > 100) {
+        alert('Veuillez saisir une quantité comprise entre 1 et 100');
+        itemQuantity.value = 1;
+    } else {
+        let selectedQty = itemQuantity.value;
+        let product =  {
+        'id' : id,
+        'color' : selectedColor,
+        'qty': selectedQty
+    };
+    pushBasket(product);
+    }
+});
