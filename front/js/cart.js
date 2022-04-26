@@ -309,9 +309,29 @@ commandButton.addEventListener('click',function() {
         })
         if (products.length == 0) {
             alert('Vous ne commandez aucun article')
-        } else {
-            postAPI = {contact, products};
-            fetch('http://localhost:3000/api/products/order', {
+        }
+    }
+})
+
+let url = new URL(window.location.href);
+let urlFirstName = url.searchParams.get('firstName');
+let urlLastName = url.searchParams.get('lastName');
+let urlAddress = url.searchParams.get('address');
+let urlCity = url.searchParams.get('city');
+let urlEmail = url.searchParams.get('email');
+
+if(urlFirstName != null) {
+    contact.firstName = urlFirstName;
+    contact.lastName = urlLastName;
+    contact.address = urlAddress;
+    contact.city = urlCity;
+    contact.email = urlEmail;
+
+    getArticle.forEach(getId => {
+        products.push(getId.dataset.id);
+    })
+    postAPI = {contact, products};
+    fetch('http://localhost:3000/api/products/order', {
                 method: 'POST',
                 headers : {
                     'Content-Type' : 'application/json'
@@ -324,9 +344,6 @@ commandButton.addEventListener('click',function() {
                 }
             })
             .then(function(value) {
-                location = 'confirmation.html' + '?orderId=' + value.orderId;
+                window.open('confirmation.html' + '?orderId=' + value.orderId);
             })
-        }
-    }
-})
-
+}
