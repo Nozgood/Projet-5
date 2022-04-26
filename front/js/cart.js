@@ -189,19 +189,17 @@ deleteButton.forEach(remove => {
                     localStorage.setItem('basket', JSON.stringify(basket));
                 } else {
                     localStorage.removeItem('basket');
+                    spanPrice.textContent = '0';
+                    spanQty.textContent = '0';
                 }
                 articleToRemove.remove();
             }
-
-            // display the new price / quantity 
-            if (basket.length == 0) {
-                spanPrice.textContent = '0';
-                spanQty.textContent = '0';
-            } else {
-                itemsQty.push(parseInt(basket[i].qty));
+        }
+        // display the new price / quantity 
+        for(i in basket) {
+            itemsQty.push(parseInt(basket[i].qty));
             getPrice(basket[i].id, basket[i].qty);
             totalQty();
-            }
         }
     })
 })

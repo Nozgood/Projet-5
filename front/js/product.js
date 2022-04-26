@@ -59,16 +59,9 @@ function getBasket() {
 // add a product to the localstorage
 function pushBasket(product) {
     let basket = getBasket();
-
-    if (basket.length > 0) {
-        let foundProductId = basket.find(p => p.id == product.id)
-        let foundProductColor = basket.find(p => p.color == product.color)
-
-        if (foundProductColor != undefined && foundProductId != undefined) {
-            foundProductColor.qty = parseInt(product.qty) + parseInt(foundProductColor.qty);
-        } else {
-            basket.push(product);
-        }
+    let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
+    if (foundProduct != undefined) {
+        foundProduct.qty = parseInt(product.qty) + parseInt(foundProduct.qty);
     } else {
         basket.push(product);
     }
