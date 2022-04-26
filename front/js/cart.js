@@ -208,6 +208,7 @@ let form = document.getElementsByClassName('cart__order__form');
 // init first Name
 let firstName = document.getElementById('firstName');
 let firstNameError = document.getElementById('firstNameErrorMsg');
+let nameErrorText = 'Veuillez saisir un prénom/nom contenant uniquement des lettres sans espaces';
 
 // init last Name
 let lastName = document.getElementById('lastName');
@@ -216,14 +217,17 @@ let lastNameError = document.getElementById('lastNameErrorMsg');
 // init address
 let address = document.getElementById('address');
 let addressError = document.getElementById('addressErrorMsg');
+let addressErrorText = 'Veuillez saisir une adresse adéquate';
 
 // init city
 let city = document.getElementById('city');
 let cityError = document.getElementById('cityErrorMsg');
+let cityErrorText = 'Veuillez saisir une ville existante';
 
 // init mail 
 let mail = document.getElementById('email');
 let mailError = document.getElementById('emailErrorMsg');
+let mailErrorText = 'Veuillez saisir une adresse mail adéquate';
 
 // event to listen
 let commandButton = document.getElementById('order');
@@ -246,57 +250,83 @@ let contact = {
 // init the product array to post 
 let products = [];
 
-let a;
-// listen the click on the command Button
-commandButton.addEventListener('click', event => {
-    firstNameError.textContent = '';
-    lastNameError.textContent = '';
-    addressError.textContent = '';
-    cityError.textContent = '';
-    mailError.textContent = '';
+// array to store regex verification 
+let regexArray = [];
 
-    // check datas are correctly set
-    if (regName.test(firstName.value) == false) {
-        firstNameError.textContent = 'Veuillez saisir un prénom contenant uniquement des lettres sans espaces';
-    } else if (regName.test(lastName.value) == false) {
-        lastNameError.textContent = 'Veuillez saisir un nom contenant uniquement des lettres sans espaces ni caractères spéciaux.';
-    } else if (regAddress.test(address.value) == false) {
-        addressError.textContent = 'Veuillez saisir une adresse adéquate';
-    } else if (regCity.test(city.value) == false) {
-        cityError.textContent = 'Veuillez saisir une ville existante'
-    } else if (regMail.test(mail.value) == false) {
-        mailError.textContent = 'Veuillez saisir une adresse mail adéquate';
+// function to verify the form's datas
+function formVerify(data, regex, dataError, dataErrorText) {
+    if (regex.test(data.value) == false) {
+        dataError.textContent = dataErrorText;
+        return false;
     } else {
-        // put the datas in the object
+        dataErrorText = '';
+        dataError.textContent = dataErrorText;
+        return true;
+    }
+}
+
+let firstNameBoo;
+firstName.addEventListener('change', function() {
+    firstNameBoo = formVerify(firstName, regName, firstNameError, nameErrorText);
+})
+
+let lastNameBoo;
+lastName.addEventListener('change', function() {
+    lastNameBoo = formVerify(lastName, regName, lastNameError, nameErrorText);
+})
+
+let addressBoo;
+address.addEventListener('change', function() {
+    addressBoo = formVerify(address, regAddress, addressError, addressErrorText);
+})
+
+let cityBoo;
+city.addEventListener('change', function() {
+    cityBoo = formVerify(city, regCity, cityError, cityErrorText);
+})
+
+let mailBoo;
+mail.addEventListener('change', function() {
+    mailBoo = formVerify(mail, regMail, mailError, mailErrorText);
+})
+
+let postAPI = {};
+commandButton.addEventListener('click',function() {
+    regexArray.push(firstNameBoo, lastNameBoo, addressBoo, cityBoo, mailBoo)
+    if (regexArray.indexOf(false) >= 0) {
+        alert('Votre requête n\'as pas été prise en compte')
+    } else if (regexArray.indexOf(undefined) >= 0) {
+        alert('Veuillez remplir les champs Prénom, nom, adresse, ville et email');
+    } else {
         contact.firstName = firstName.value
         contact.lastName = lastName.value
         contact.address = address.value;
         contact.city = city.value;
         contact.email = email.value;
-    
-        //  get the product array 
-    
+
         getArticle.forEach(getId => {
             products.push(getId.dataset.id);
         })
-        let test = {contact, products};
-        fetch('http://localhost:3000/api/products/order', {
-            method: 'POST',
-            headers : {
-                'Accept' : 'application/json',
-                'Content-Type' : 'application/json'
-            },
-            body : JSON.stringify(test)
-        })
-        .then(function(res) {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .then(function(value) {
-            localStorage.setItem('value', value.orderId);
-        })
-        window.open('confirmation.html' + '?orderId=' + localStorage.getItem('value'));
-        localStorage.removeItem('value');
+        if (products.length == 0) {
+            alert('Vous ne commandez aucun article')
+        } else {
+            postAPI = {contact, products};
+            fetch('http://localhost:3000/api/products/order', {
+                method: 'POST',
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify(postAPI)
+            })
+            .then(function(res) {
+                if (res.ok) {
+                    return res.json();
+                }
+            })
+            .then(function(value) {
+                location = 'confirmation.html' + '?orderId=' + value.orderId;
+            })
+        }
     }
 })
+
