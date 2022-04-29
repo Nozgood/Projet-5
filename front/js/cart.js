@@ -49,10 +49,8 @@ if (basket != null) {
         itemArticle.setAttribute('data-color', basket[i].color);
         itemArticle.setAttribute('data-id', basket[i].id);
         itemSection.appendChild(itemArticle);
-    
         itemsQty.push(parseInt(basket[i].qty));
-        totalQty();
-    
+
         // set the div to display img infos 
         let imgDiv = document.createElement('div');
         imgDiv.setAttribute('class', 'cart__item__img');
@@ -106,7 +104,7 @@ if (basket != null) {
         contentSettDiv.appendChild(deleteDiv);
         deleteDiv.appendChild(pDelete);
     
-        // fetch to get the infos (title, price, image, altdesc ...)
+        // fetch to get and display the infos (title, price, image, altdesc ...)
         fetch('http://localhost:3000/api/products/' + basket[i].id)
         .then(function(res) {
             if(res.ok) {
@@ -124,6 +122,7 @@ if (basket != null) {
             h2Content.textContent = value.name;
         })
     }
+    totalQty();
 }
 
 // modify quantity 
@@ -176,60 +175,63 @@ deleteButton.forEach(remove => {
         let articleToRemove = remove.closest('article');
         let articleColor = articleToRemove.dataset.color;
         let articleId = articleToRemove.dataset.id;
+        let resultat = window.confirm('Êtes-vous sûr de vouloir supprimer cet article ?');
 
-        // reinitialise price and qty arrays
-        littlePrice.splice(0);
-        itemsQty.splice(0);
+        if (resultat === true) {
+            // reinitialise price and qty arrays
+            littlePrice.splice(0);
+            itemsQty.splice(0);
 
-        // loop to find the item to delete
-        for (i in basket) {
-            if (articleColor == basket[i].color && articleId == basket[i].id) {
-                basket.splice(i, 1);
-                if (basket.length != 0) {
-                    localStorage.setItem('basket', JSON.stringify(basket));
-                } else {
-                    localStorage.removeItem('basket');
-                    spanPrice.textContent = '0';
-                    spanQty.textContent = '0';
+            // loop to find the item to delete
+            for (i in basket) {
+                if (articleColor == basket[i].color && articleId == basket[i].id) {
+                    basket.splice(i, 1);
+                    if (basket.length != 0) {
+                        localStorage.setItem('basket', JSON.stringify(basket));
+                    } else {
+                        localStorage.removeItem('basket');
+                        spanPrice.textContent = '0';
+                        spanQty.textContent = '0';
+                    }
+                    articleToRemove.remove();
                 }
-                articleToRemove.remove();
             }
-        }
-        // display the new price / quantity 
-        for(i in basket) {
-            itemsQty.push(parseInt(basket[i].qty));
-            getPrice(basket[i].id, basket[i].qty);
-            totalQty();
+            // display the new price / quantity 
+            for(i in basket) {
+                itemsQty.push(parseInt(basket[i].qty));
+                getPrice(basket[i].id, basket[i].qty);
+                totalQty();
+            }
         }
     })
 })
 
-///////////////////////////////////////:
-
 // user form and make the command 
 
 // init variables 
+// get the form
 let form = document.getElementsByClassName('cart__order__form');
-// init first Name
+
+// get first Name
 let firstName = document.getElementById('firstName');
 let firstNameError = document.getElementById('firstNameErrorMsg');
 let nameErrorText = 'Veuillez saisir un prénom/nom contenant uniquement des lettres sans espaces';
 
-// init last Name
+// get last Name
 let lastName = document.getElementById('lastName');
 let lastNameError = document.getElementById('lastNameErrorMsg');
 
-// init address
+// get address
 let address = document.getElementById('address');
 let addressError = document.getElementById('addressErrorMsg');
 let addressErrorText = 'Veuillez saisir une adresse adéquate';
 
-// init city
+// get city
 let city = document.getElementById('city');
 let cityError = document.getElementById('cityErrorMsg');
 let cityErrorText = 'Veuillez saisir une ville existante';
 
-// init mail 
+// get mail 
 let mail = document.getElementById('email');
 let mailError = document.getElementById('emailErrorMsg');
 let mailErrorText = 'Veuillez saisir une adresse mail adéquate';
@@ -243,16 +245,14 @@ let regAddress = /^([a-zA-Z0-9]+)[a-zA-Z0-9éèêëàâæáäîïôœöùûü\s,
 let regCity = /^([a-zA-Z]+)[a-zA-Z-\s]{3,}$/;
 let regMail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
 
-// init the object to POST 
+// init the object and the product array to post to POST 
 let contact = {
-    'firstName' : '',
-    'lastName' : '',
-    'address' : '',
-    'city' : '', 
-    'email' : ''
+    firstName : '',
+    lastName : '',
+    address : '',
+    city : '', 
+    email : ''
 }
-
-// init the product array to post 
 let products = [];
 
 // array to store regex verification 
@@ -346,5 +346,6 @@ if(urlFirstName != null) {
     })
     .then(function(value) {
         window.open('confirmation.html' + '?orderId=' + value.orderId);
+        localStorage.removeItem('basket');
     })
 }

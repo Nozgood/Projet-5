@@ -82,9 +82,9 @@ addBasket.addEventListener('click', function basket() {
     } else {
         let selectedQty = itemQuantity.value;
         let product =  {
-        'id' : id,
-        'color' : selectedColor,
-        'qty': selectedQty
+        id : id,
+        color : selectedColor,
+        qty : selectedQty
     };
     pushBasket(product);
     }
