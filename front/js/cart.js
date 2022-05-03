@@ -241,7 +241,7 @@ let commandButton = document.getElementById('order');
 
 // regex variables 
 let regName = /^[a-zA-Zéèêëàâæáäîïôœöùûü]+$/;
-let regAddress = /^([a-zA-Z0-9]+)[a-zA-Z0-9éèêëàâæáäîïôœöùûü\s,.'-]{3,}$/;
+let regAddress = /^([0-9]*) ?([a-zA-Z]+)[a-zA-Zéèêëàâæáäîïôœöùûü\s,.'-]{3,}$/;
 let regCity = /^([a-zA-Z]+)[a-zA-Z-\s]{3,}$/;
 let regMail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
 
@@ -346,6 +346,5 @@ if(urlFirstName != null) {
     })
     .then(function(value) {
         window.open('confirmation.html' + '?orderId=' + value.orderId);
-        localStorage.removeItem('basket');
     })
 }
