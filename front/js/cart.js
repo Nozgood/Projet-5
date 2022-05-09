@@ -300,12 +300,15 @@ mail.addEventListener('change', function() {
 })
 
 // form verify before submit
-commandButton.addEventListener('click',function() {
+commandButton.addEventListener('click',function(event) {
     regexArray.push(firstNameBoo, lastNameBoo, addressBoo, cityBoo, mailBoo)
     if (regexArray.indexOf(false) >= 0) {
         alert('Votre requête n\'as pas été prise en compte')
     } else if (regexArray.indexOf(undefined) >= 0) {
         alert('Veuillez remplir les champs Prénom, nom, adresse, ville et email');
+    } else if (basket == null) {
+        event.preventDefault();
+        alert('Votre panier est vide.')
     }
 })
 
@@ -318,7 +321,7 @@ let urlCity = url.searchParams.get('city');
 let urlEmail = url.searchParams.get('email');
 
 // condition to fetch 
-if(urlFirstName != null && basket.length != null) {
+if(urlFirstName != null && basket != null) {
     // set the contact array
     contact.firstName = urlFirstName;
     contact.lastName = urlLastName;
